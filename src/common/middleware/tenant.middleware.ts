@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 export class TenantMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     // Extract tenant from the headers
-    const tenantSubdomain = req.headers['tenantSubdomain'] as string;
+    const tenantSubdomain = req.headers['Tenant-Subdomain'] as string;
 
     if (!tenantSubdomain) {
       req['tenantSubdomain'] = null;
