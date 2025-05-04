@@ -4,14 +4,13 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class TenantMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    const host = req.hostname;
-    const subdomain = host.split('.')[0];
+    // Extract tenant from the headers
+    const tenantSubdomain = req.headers['tenantSubdomain'] as string;
 
-    // Excluye dominios como "localhost:3000"
-    if (subdomain === 'localhost' || /^[\d.]+$/.test(subdomain)) {
+    if (!tenantSubdomain) {
       req['tenantSubdomain'] = null;
     } else {
-      req['tenantSubdomain'] = subdomain;
+      req['tenantSubdomain'] = tenantSubdomain;
     }
 
     next();
