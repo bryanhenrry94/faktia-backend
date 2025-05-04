@@ -12,16 +12,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    origin: (origin, callback) => {
-      // Permitir frontend local y sus subdominios
-      const allowedOrigins = ['http://app.localhost:3000'];
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true, // 🔥 Necesario para enviar cookies
+    origin: '*',
   });
   await app.listen(process.env.PORT ?? 3000);
 }
