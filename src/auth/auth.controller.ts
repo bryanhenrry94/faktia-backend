@@ -5,11 +5,10 @@ import {
   Req,
   HttpCode,
   HttpStatus,
-  Res,
   Get,
   UseGuards,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './JwtAuthGuard';
 
@@ -22,9 +21,8 @@ export class AuthController {
   async login(
     @Body() body: { email: string; password: string },
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
   ) {
-    const subdomain = req['tenantSubdomain'];
+    const subdomain = req['tenant-subdomain'];
 
     const token = await this.authService.login(
       body.email,
@@ -45,7 +43,7 @@ export class AuthController {
     },
     @Req() req: Request,
   ) {
-    const subdomain = req['tenantSubdomain'];
+    const subdomain = req['tenant-subdomain'];
 
     return this.authService.register({
       name: body.name,

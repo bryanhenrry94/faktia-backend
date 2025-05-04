@@ -12,7 +12,20 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    origin: '*',
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // Permitir llamadas sin origen (como Postman)
+
+      const allowedDomain = /\.faktia\.lat$/; // Permitir cualquier subdominio de faktia.lat
+
+      if (allowedDomain.test(new URL(origin).hostname)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'tenant-subdomain'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   });
   await app.listen(process.env.PORT ?? 3000);
 }
