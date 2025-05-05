@@ -15,14 +15,16 @@ datasource db {
 
 // prisma/schema.prisma
 model Tenant {
-  id        String   @id @default(cuid())
-  name      String
-  subdomain String   @unique
-  status    String   @default("active")
-  plan      String   @default("free")
-  email     String
-  users     User[]
-  createdAt DateTime @default(now())
+  id                        String                     @id @default(cuid())
+  name                      String
+  subdomain                 String                     @unique
+  status                    String                     @default("active")
+  plan                      String                     @default("free")
+  email                     String
+  users                     User[]
+  organization              Organization? // relación 1:1
+  createdAt                 DateTime                   @default(now())
+  ElectronicInvoicingConfig ElectronicInvoicingConfig?
 }
 
 model User {
@@ -36,4 +38,57 @@ model User {
   tenantId  String
   tenant    Tenant    @relation(fields: [tenantId], references: [id])
   createdAt DateTime  @default(now())
+}
+
+model Organization {
+  id                  String          @id @default(cuid())
+  taxId               String
+  legalName           String
+  tradeName           String
+  establishmentNumber String
+  accountingRequired  Boolean
+  specialTaxpayer     Boolean
+  largeTaxpayer       Boolean
+  rimpeRegimeTaxpayer Boolean
+  rimpe               String
+  withholdingAgent    Boolean
+  city                String
+  phone               String
+  address             String
+  logo                String
+  tenantId            String          @unique
+  tenant              Tenant          @relation(fields: [tenantId], references: [id])
+  createdAt           DateTime        @default(now())
+  IssuancePoint       IssuancePoint[]
+}
+
+model ElectronicInvoicingConfig {
+  id                    String          @id @default(cuid())
+  tenantId              String          @unique
+  digitalCertificate    Bytes // .p12 file stored as binary
+  certificatePassword   String
+  certificateExpiryDate DateTime
+  issuancePoints        IssuancePoint[] // related issuance points
+  tenant                Tenant          @relation(fields: [tenantId], references: [id])
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+}
+
+model IssuancePoint {
+  id             String                    @id @default(cuid())
+  documentType   DocumentType
+  pointOfSale    String
+  organizationId String
+  configId       String
+  config         ElectronicInvoicingConfig @relation(fields: [configId], references: [id])
+  organization   Organization              @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime                  @default(now())
+}
+
+enum DocumentType {
+  INVOICE
+  CREDIT_NOTE
+  WITHHOLDING
+  DELIVERY_NOTE
+  DEBIT_NOTE
 }

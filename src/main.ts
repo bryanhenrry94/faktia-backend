@@ -14,6 +14,9 @@ async function bootstrap() {
   app.enableCors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true); // Permitir llamadas sin origen (como Postman)
+      if (process.env.NODE_ENV === 'development') return callback(null, true); // Permitir en test
+
+      console.log('process.env.NODE_ENV: ', process.env.NODE_ENV);
 
       const allowedDomain = /\.faktia\.lat$/; // Permitir cualquier subdominio de faktia.lat
 

@@ -29,13 +29,13 @@ export class AuthService {
   async login(email: string, password: string, subdomain: string) {
     const user = await this.validateUser(email, password, subdomain);
 
-    const payload = {
+    const access_token = this.jwtService.sign({
       sub: user.id,
       email: user.email,
       tenantId: user.tenantId,
-    };
+    });
 
-    return this.jwtService.sign(payload);
+    return { access_token };
   }
 
   async register(data: {

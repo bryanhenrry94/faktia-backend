@@ -24,13 +24,13 @@ export class AuthController {
   ) {
     const subdomain = req['tenant-subdomain'];
 
-    const token = await this.authService.login(
+    const result = await this.authService.login(
       body.email,
       body.password,
       subdomain,
     );
 
-    return { access_token: token };
+    return result;
   }
 
   @Post('register')
