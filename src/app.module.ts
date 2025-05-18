@@ -8,6 +8,7 @@ import { OrganizationModule } from './organization/organization.module';
 import { ElectronicInvoicingConfigModule } from './electronic-invoicing-config/electronic-invoicing-config.module';
 import { IssuancePointModule } from './issuance-point/issuance-point.module';
 import { MembershipsModule } from './memberships/memberships.module';
+import { RecoveryPasswordModule } from './recovery-password/recovery-password.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MembershipsModule } from './memberships/memberships.module';
     ElectronicInvoicingConfigModule,
     IssuancePointModule,
     MembershipsModule,
+    RecoveryPasswordModule,
   ],
   controllers: [],
   providers: [PrismaService],

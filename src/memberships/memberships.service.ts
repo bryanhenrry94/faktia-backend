@@ -90,6 +90,56 @@ export class MembershipsService {
     };
   }
 
+  async resendInvite(
+    invitation: string,
+  ): Promise<{ status: boolean; message: string }> {
+    if (!invitation) {
+      return {
+        status: false,
+        message: 'id es requeridos',
+      };
+    }
+
+    // Check if the membership already exists
+    const existingMembership = await this.prisma.memberships.findFirst({
+      where: {
+        id: invitation,
+        status: 'pending',
+      },
+      include: {
+        user: true,
+        tenant: true,
+      },
+    });
+
+    if (!existingMembership) {
+      return {
+        status: false,
+        message: 'La membresía no existe o no se encuentra en estado pendiente',
+      };
+    }
+
+    // Generate the invitation URL
+    const baseUrl =
+      process.env.NODE_ENV === 'development'
+        ? `http://${existingMembership.tenant.subdomain}.localhost:3000`
+        : `https://${existingMembership.tenant.subdomain}.faktia`;
+    const url = `${baseUrl}/invite/${existingMembership.id}`;
+
+    // Send an email to the user with the invitation link
+    await this.mailService.sendInvitationEmail(
+      existingMembership.user.email,
+      existingMembership.user?.name || 'Usuario',
+      existingMembership.tenant.name,
+      url,
+    );
+
+    return {
+      status: true,
+      message: `Invitación enviada a ${existingMembership.user.email} para el tenant ${existingMembership.tenant.name}`,
+    };
+  }
+
   create(createMembershipDto: CreateMembershipDto) {
     return this.prisma.memberships.create({
       data: {

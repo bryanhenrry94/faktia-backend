@@ -52,6 +52,7 @@ export class UserService {
       data: {
         name: updateUserDto.name,
         email: updateUserDto.email,
+        status: updateUserDto.status,
       },
     });
   }

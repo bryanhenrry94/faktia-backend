@@ -26,21 +26,27 @@ export class AuthService {
       where: { email },
     });
     if (!user) {
-      throw new UnauthorizedException('Usuario no encontrado');
+      throw new UnauthorizedException('Credenciales incorrectas');
     }
+
+    // Check if the user is active
+    if (!user.status || user.status !== 'active') {
+      throw new UnauthorizedException('Credenciales incorrectas');
+    }
+
     // Check if the user is a member of the tenant
     const membership = await this.membershipsService.exists(user.id, tenantId);
     if (!membership) {
-      throw new UnauthorizedException('Usuario no encontrado');
+      throw new UnauthorizedException('Credenciales incorrectas');
     }
     // Check if the membership status is accepted
     if (membership.status !== 'accepted') {
-      throw new UnauthorizedException('Usuario no activo');
+      throw new UnauthorizedException('Credenciales incorrectas');
     }
 
     // Validate password
     if (!user.password) {
-      throw new UnauthorizedException('Usuario no encontrado');
+      throw new UnauthorizedException('Credenciales incorrectas');
     }
 
     if (!user || !(await bcrypt.compare(password, user.password))) {

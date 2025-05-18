@@ -64,4 +64,27 @@ export class MailService {
       html: htmlBody,
     });
   }
+
+  async sendPasswordRecoveryEmail(
+    to: string,
+    name: string,
+    tenantName: string,
+    link: string,
+  ) {
+    const subject = `${tenantName}: Recuperación de contraseña`;
+
+    const htmlBody = `
+      <p><span>Hola, ${name}:</span></p>
+      <p><span>Recibimos tu solicitud para recuperar tu contraseña. Para continuar, haz clic en el siguiente enlace:</span></p>
+      <p><a href="${link}">${link}</a></p>
+      <p><span>Por razones de seguridad, este enlace expirará en 24 horas. Si no solicitaste este cambio, puedes ignorar este mensaje.</span></p>
+      <p><span>¡Gracias por confiar en nosotros!</span></p>
+    `;
+    await this.transporter.sendMail({
+      from: `"${this.configService.get('EMAIL_USER_NAME')}" <${this.configService.get('EMAIL_USER')}>`,
+      to,
+      subject,
+      html: htmlBody,
+    });
+  }
 }

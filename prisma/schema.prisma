@@ -32,6 +32,7 @@ model User {
   email       String        @unique
   name        String?
   password    String?
+  status      String        @default("active")
   createdAt   DateTime      @default(now())
   memberships Memberships[]
 }
@@ -46,6 +47,14 @@ model Memberships {
   user      User     @relation(fields: [userId], references: [id])
   tenant    Tenant   @relation(fields: [tenantId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model RecoveryPassword {
+  id        String   @id @default(cuid())
+  email     String
+  hash     String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }
 
 model Organization {

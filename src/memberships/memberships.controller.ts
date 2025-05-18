@@ -28,6 +28,11 @@ export class MembershipsController {
     return this.membershipsService.invite(body.email, subdomain);
   }
 
+  @Post('/resend-invite')
+  resentInvite(@Body() body: { invitation: string }) {
+    return this.membershipsService.resendInvite(body.invitation);
+  }
+
   @Post('/accept-invite')
   acceptInvite(@Body() body: { invitation: string }) {
     return this.membershipsService.acceptInvite(body.invitation);
