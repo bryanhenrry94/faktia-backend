@@ -21,7 +21,7 @@ export class TenantService {
   findAll() {
     return this.prisma.tenant.findMany({
       include: {
-        users: true,
+        memberships: true,
       },
     });
   }
@@ -29,6 +29,12 @@ export class TenantService {
   findOne(id: string) {
     return this.prisma.tenant.findUnique({
       where: { id },
+    });
+  }
+
+  findOneBySubdomain(subdomain: string) {
+    return this.prisma.tenant.findUnique({
+      where: { subdomain },
     });
   }
 

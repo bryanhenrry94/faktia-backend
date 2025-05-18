@@ -16,9 +16,6 @@ export class UserService {
         name: createUserDto.name,
         email: createUserDto.email,
         password: hashedPassword,
-        tenantId: createUserDto.tenantId,
-        role: createUserDto.role,
-        status: createUserDto.status,
       },
     });
   }
@@ -26,16 +23,19 @@ export class UserService {
   findAll() {
     return this.prisma.user.findMany({
       include: {
-        tenant: true,
+        memberships: true,
       },
     });
   }
 
   findAllByTenantId(tenantId: string) {
     return this.prisma.user.findMany({
-      where: { tenantId },
-      include: {
-        tenant: true,
+      where: {
+        memberships: {
+          some: {
+            tenantId: tenantId,
+          },
+        },
       },
     });
   }
@@ -52,9 +52,6 @@ export class UserService {
       data: {
         name: updateUserDto.name,
         email: updateUserDto.email,
-        tenantId: updateUserDto.tenantId,
-        role: updateUserDto.role,
-        status: updateUserDto.status,
       },
     });
   }

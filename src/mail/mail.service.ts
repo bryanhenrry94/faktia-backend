@@ -41,4 +41,27 @@ export class MailService {
       html: htmlBody,
     });
   }
+
+  async sendInvitationEmail(
+    to: string,
+    name: string,
+    tenantName: string,
+    link: string,
+  ) {
+    const subject = `${tenantName}: Invitación a unirte a nuestro equipo`;
+
+    const htmlBody = `
+      <p><span>Hola, ${name}:</span></p>
+      <p><span>Te invitamos a unirte a nuestro equipo en ${tenantName}. Para aceptar la invitación, haz clic en el siguiente enlace:</span></p>
+      <p><a href="${link}">${link}</a></p>
+      <p><span>¡Esperamos verte pronto!</span></p>
+    `;
+
+    await this.transporter.sendMail({
+      from: `"${this.configService.get('EMAIL_USER_NAME')}" <${this.configService.get('EMAIL_USER')}>`,
+      to,
+      subject,
+      html: htmlBody,
+    });
+  }
 }

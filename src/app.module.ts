@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { OrganizationModule } from './organization/organization.module';
 import { ElectronicInvoicingConfigModule } from './electronic-invoicing-config/electronic-invoicing-config.module';
 import { IssuancePointModule } from './issuance-point/issuance-point.module';
+import { MembershipsModule } from './memberships/memberships.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { IssuancePointModule } from './issuance-point/issuance-point.module';
     OrganizationModule,
     ElectronicInvoicingConfigModule,
     IssuancePointModule,
+    MembershipsModule,
   ],
   controllers: [],
   providers: [PrismaService],
