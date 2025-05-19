@@ -16,15 +16,28 @@ datasource db {
 // prisma/schema.prisma
 model Tenant {
   id                        String                     @id @default(cuid())
+  taxId                     String                     @unique
   name                      String
   subdomain                 String                     @unique
   status                    String                     @default("active")
   plan                      String                     @default("free")
   email                     String
-  organization              Organization? // relación 1:1
+  tradeName                 String?
+  establishmentNumber       String?
+  accountingRequired        Boolean?
+  specialTaxpayer           Boolean?
+  largeTaxpayer             Boolean?
+  rimpeRegimeTaxpayer       Boolean?
+  rimpe                     String?
+  withholdingAgent          Boolean?
+  city                      String?
+  phone                     String?
+  address                   String?
+  logo                      String?
   createdAt                 DateTime                   @default(now())
-  electronicInvoicingConfig ElectronicInvoicingConfig?
+  issuancePoint             IssuancePoint[]
   memberships               Memberships[]
+  ElectronicInvoicingConfig ElectronicInvoicingConfig?
 }
 
 model User {
@@ -52,31 +65,9 @@ model Memberships {
 model RecoveryPassword {
   id        String   @id @default(cuid())
   email     String
-  hash     String
+  hash      String
   createdAt DateTime @default(now())
   expiresAt DateTime
-}
-
-model Organization {
-  id                  String          @id @default(cuid())
-  taxId               String
-  legalName           String
-  tradeName           String
-  establishmentNumber String
-  accountingRequired  Boolean
-  specialTaxpayer     Boolean
-  largeTaxpayer       Boolean
-  rimpeRegimeTaxpayer Boolean
-  rimpe               String
-  withholdingAgent    Boolean
-  city                String
-  phone               String
-  address             String
-  logo                String
-  tenantId            String          @unique
-  tenant              Tenant          @relation(fields: [tenantId], references: [id])
-  createdAt           DateTime        @default(now())
-  issuancePoint       IssuancePoint[]
 }
 
 model ElectronicInvoicingConfig {
@@ -98,8 +89,9 @@ model IssuancePoint {
   organizationId String
   configId       String
   config         ElectronicInvoicingConfig @relation(fields: [configId], references: [id])
-  organization   Organization              @relation(fields: [organizationId], references: [id])
   createdAt      DateTime                  @default(now())
+  Tenant         Tenant?                   @relation(fields: [tenantId], references: [id])
+  tenantId       String?
 }
 
 enum DocumentType {

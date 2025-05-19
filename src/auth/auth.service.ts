@@ -24,6 +24,9 @@ export class AuthService {
     // Check if the user exists and validate password
     const user = await this.prisma.user.findFirst({
       where: { email },
+      include: {
+        memberships: true,
+      },
     });
     if (!user) {
       throw new UnauthorizedException('Credenciales incorrectas');
@@ -59,9 +62,24 @@ export class AuthService {
   async login(email: string, password: string, subdomain: string) {
     const user = await this.validateUser(email, password, subdomain);
 
+    // get firt membership
+    if (!user.memberships || user.memberships.length === 0) {
+      throw new UnauthorizedException('No tienes acceso a este tenant');
+    }
+    // get the first membership
+    const membership = await user.memberships[0];
+
+    // Get tenant for tenantId
+    const tenant = await this.prisma.tenant.findUnique({
+      where: { id: membership.tenantId },
+    });
+
     const access_token = this.jwtService.sign({
       sub: user.id,
       email: user.email,
+      name: user.name,
+      role: membership.role,
+      tenant: tenant,
     });
 
     return { access_token };

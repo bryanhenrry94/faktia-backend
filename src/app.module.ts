@@ -4,7 +4,6 @@ import { PrismaService } from 'prisma/prisma.service';
 import { TenantModule } from 'src/tenant/tenant.module';
 import { MailModule } from 'src/mail/mail.module';
 import { UserModule } from './user/user.module';
-import { OrganizationModule } from './organization/organization.module';
 import { ElectronicInvoicingConfigModule } from './electronic-invoicing-config/electronic-invoicing-config.module';
 import { IssuancePointModule } from './issuance-point/issuance-point.module';
 import { MembershipsModule } from './memberships/memberships.module';
@@ -16,7 +15,6 @@ import { RecoveryPasswordModule } from './recovery-password/recovery-password.mo
     TenantModule,
     MailModule,
     UserModule,
-    OrganizationModule,
     ElectronicInvoicingConfigModule,
     IssuancePointModule,
     MembershipsModule,
